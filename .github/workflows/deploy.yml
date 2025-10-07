@@ -84,8 +84,8 @@ jobs:
             --port 8080 \
             --memory 2Gi \
             --cpu 1 \
-            --max-instances 10 \
-            --min-instances 0 \
+            --max-instances 5 \
+            --min-instances 1 \
             --timeout 3600 \
             --concurrency 80 \
             --service-account github-actions@$PROJECT_ID.iam.gserviceaccount.com \
