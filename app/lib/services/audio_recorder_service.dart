@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 enum AudioRecorderState {
   stopped,
@@ -53,7 +54,7 @@ class AudioRecorderService {
       await _recorder!.openRecorder();
       await _player!.openPlayer();
 
-      print('✅ Audio services initialized for Live API');
+      debugPrint('✅ Audio services initialized for Live API');
       return true;
     } catch (e) {
       _notifyError('Failed to initialize audio: $e');
@@ -98,7 +99,7 @@ class AudioRecorderService {
       // Start periodic check to ensure streaming continues
       _startStreamMonitoring();
 
-      print('🎤 Started continuous audio streaming for Live API');
+      debugPrint('🎤 Started continuous audio streaming for Live API');
       return true;
     } catch (e) {
       _notifyError('Failed to start continuous streaming: $e');
@@ -117,7 +118,7 @@ class AudioRecorderService {
 
       // Check if recorder is still active
       if (_recorder?.isRecording != true) {
-        print('⚠️ Audio stream interrupted, attempting to restart...');
+        debugPrint('⚠️ Audio stream interrupted, attempting to restart...');
         _restartStreaming();
       }
     });
@@ -151,7 +152,7 @@ class AudioRecorderService {
       _isStreamingActive = false;
 
       _updateState(AudioRecorderState.stopped);
-      print('🔇 Stopped continuous audio streaming');
+      debugPrint('🔇 Stopped continuous audio streaming');
     } catch (e) {
       _notifyError('Failed to stop streaming: $e');
     }
@@ -164,7 +165,7 @@ class AudioRecorderService {
     try {
       await _recorder!.pauseRecorder();
       _updateState(AudioRecorderState.paused);
-      print('⏸️ Paused audio streaming');
+      debugPrint('⏸️ Paused audio streaming');
     } catch (e) {
       _notifyError('Failed to pause streaming: $e');
     }
@@ -177,7 +178,7 @@ class AudioRecorderService {
     try {
       await _recorder!.resumeRecorder();
       _updateState(AudioRecorderState.streaming);
-      print('▶️ Resumed audio streaming');
+      debugPrint('▶️ Resumed audio streaming');
     } catch (e) {
       _notifyError('Failed to resume streaming: $e');
     }
@@ -213,7 +214,7 @@ class AudioRecorderService {
         },
       );
 
-      print('🔊 Playing Live API audio (${audioData.length} bytes)');
+      debugPrint('🔊 Playing Live API audio (${audioData.length} bytes)');
     } catch (e) {
       _notifyError('Failed to play audio: $e');
     }
@@ -226,7 +227,7 @@ class AudioRecorderService {
     try {
       if (_player!.isPlaying) {
         await _player!.stopPlayer();
-        print('🔇 Stopped audio playback');
+        debugPrint('🔇 Stopped audio playback');
       }
     } catch (e) {
       _notifyError('Failed to stop playback: $e');
@@ -284,7 +285,7 @@ class AudioRecorderService {
         try {
           listener(newState);
         } catch (e) {
-          print('❌ Error in state listener: $e');
+          debugPrint('❌ Error in state listener: $e');
         }
       }
     }
@@ -296,19 +297,19 @@ class AudioRecorderService {
       try {
         listener(audioData);
       } catch (e) {
-        print('❌ Error in audio data listener: $e');
+        debugPrint('❌ Error in audio data listener: $e');
       }
     }
   }
 
   // Notify error listeners
   void _notifyError(String error) {
-    print('❌ Audio error: $error');
+    debugPrint('❌ Audio error: $error');
     for (final listener in _errorListeners) {
       try {
         listener(error);
       } catch (e) {
-        print('❌ Error in error listener: $e');
+        debugPrint('❌ Error in error listener: $e');
       }
     }
   }
@@ -353,6 +354,6 @@ class AudioRecorderService {
     _audioDataListeners.clear();
     _errorListeners.clear();
 
-    print('🔧 Audio services disposed');
+    debugPrint('🔧 Audio services disposed');
   }
 }

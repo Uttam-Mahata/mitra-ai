@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
+import 'package:flutter/foundation.dart';
 
 class ProfileImageService {
   static const String baseUrl = 'http://localhost:8000/api/v1'; // Update with your backend URL
@@ -102,7 +103,7 @@ class ProfileImageService {
 
       return null;
     } catch (e) {
-      print('Error getting profile image URL: $e');
+      debugPrint('Error getting profile image URL: $e');
       return null;
     }
   }
@@ -121,7 +122,7 @@ class ProfileImageService {
 
       return null;
     } catch (e) {
-      print('Error checking existing profile image: $e');
+      debugPrint('Error checking existing profile image: $e');
       return null;
     }
   }
@@ -138,7 +139,7 @@ class ProfileImageService {
         }
       }
     } catch (e) {
-      print('Error deleting profile image: $e');
+      debugPrint('Error deleting profile image: $e');
     }
   }
 

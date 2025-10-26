@@ -5,6 +5,7 @@ import 'package:web_socket_channel/status.dart' as status;
 import '../models/user_model.dart';
 import 'api_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 // Voice session models
 class VoiceSession {
@@ -237,7 +238,7 @@ class VoiceService {
           authToken = await user.getIdToken();
         }
       } catch (e) {
-        print('⚠️ Failed to get auth token: $e');
+        debugPrint('⚠️ Failed to get auth token: $e');
       }
 
       // Convert HTTP URL to WebSocket URL
@@ -251,7 +252,7 @@ class VoiceService {
         fullUrl = '$fullUrl${separator}token=$authToken';
       }
 
-      print('🔌 Connecting to Live API WebSocket: $fullUrl');
+      debugPrint('🔌 Connecting to Live API WebSocket: $fullUrl');
 
       _webSocketChannel = WebSocketChannel.connect(Uri.parse(fullUrl));
 
@@ -278,7 +279,7 @@ class VoiceService {
       // The server establishes the Live API connection
       // We just need to wait for the connection confirmation
       _isLiveSessionActive = true;
-      print('✅ Live API voice conversation services initialized');
+      debugPrint('✅ Live API voice conversation services initialized');
 
     } catch (e) {
       _updateConnectionState(VoiceConnectionState.error);
@@ -293,12 +294,12 @@ class VoiceService {
       final messageType = data['type'] as String;
       final messageData = data['data'] as Map<String, dynamic>? ?? {};
 
-      print('📨 Live API WebSocket message: $messageType');
+      debugPrint('📨 Live API WebSocket message: $messageType');
 
       switch (messageType) {
         case 'connected':
           _updateConnectionState(VoiceConnectionState.connected);
-          print('✅ Connected to voice session');
+          debugPrint('✅ Connected to voice session');
           break;
 
         case 'state_change':
@@ -356,7 +357,7 @@ class VoiceService {
 
         case 'usage':
           // Handle token usage info if needed
-          print('📊 Token usage: ${messageData['total_tokens']} tokens');
+          debugPrint('📊 Token usage: ${messageData['total_tokens']} tokens');
           break;
 
         case 'error':
@@ -374,11 +375,11 @@ class VoiceService {
           break;
 
         default:
-          print('⚠️ Unknown message type: $messageType');
+          debugPrint('⚠️ Unknown message type: $messageType');
           break;
       }
     } catch (e) {
-      print('❌ Error handling Live API message: $e');
+      debugPrint('❌ Error handling Live API message: $e');
       _notifyError('Error processing message: $e');
     }
   }
@@ -386,7 +387,7 @@ class VoiceService {
   // Send continuous audio stream to Live API
   void sendAudioStream(Uint8List audioData) {
     if (!_isLiveSessionActive || _webSocketChannel == null) {
-      print('⚠️ Cannot send audio: Live session not active');
+      debugPrint('⚠️ Cannot send audio: Live session not active');
       return;
     }
 
@@ -400,7 +401,7 @@ class VoiceService {
         }
       });
     } catch (e) {
-      print('❌ Error sending audio stream: $e');
+      debugPrint('❌ Error sending audio stream: $e');
       _notifyError('Failed to send audio: $e');
     }
   }
@@ -415,7 +416,7 @@ class VoiceService {
         'data': {}
       });
     } catch (e) {
-      print('❌ Error ending audio stream: $e');
+      debugPrint('❌ Error ending audio stream: $e');
     }
   }
 
@@ -425,21 +426,21 @@ class VoiceService {
       final jsonString = jsonEncode(message);
       _webSocketChannel?.sink.add(jsonString);
     } catch (e) {
-      print('❌ Error sending WebSocket message: $e');
+      debugPrint('❌ Error sending WebSocket message: $e');
       _notifyError('Failed to send message: $e');
     }
   }
 
   // Handle WebSocket errors
   void _handleWebSocketError(dynamic error) {
-    print('❌ Live API WebSocket error: $error');
+    debugPrint('❌ Live API WebSocket error: $error');
     _updateConnectionState(VoiceConnectionState.error);
     _notifyError('Connection error: $error');
   }
 
   // Handle WebSocket disconnect
   void _handleWebSocketDisconnect() {
-    print('🔌 Live API WebSocket disconnected');
+    debugPrint('🔌 Live API WebSocket disconnected');
     _isLiveSessionActive = false;
     _updateConnectionState(VoiceConnectionState.disconnected);
     _webSocketChannel = null;
@@ -459,7 +460,7 @@ class VoiceService {
         await _apiService.delete('/voice/session/${_currentSession!.sessionId}');
       }
     } catch (e) {
-      print('❌ Error ending voice session: $e');
+      debugPrint('❌ Error ending voice session: $e');
     } finally {
       _cleanup();
     }
@@ -478,12 +479,12 @@ class VoiceService {
   void _updateConnectionState(VoiceConnectionState newState) {
     if (_connectionState != newState) {
       _connectionState = newState;
-      print('🔄 Voice connection state: $newState');
+      debugPrint('🔄 Voice connection state: $newState');
       for (final listener in _stateListeners) {
         try {
           listener(newState);
         } catch (e) {
-          print('❌ Error in state listener: $e');
+          debugPrint('❌ Error in state listener: $e');
         }
       }
     }
@@ -495,7 +496,7 @@ class VoiceService {
       try {
         listener(event);
       } catch (e) {
-        print('❌ Error in transcript listener: $e');
+        debugPrint('❌ Error in transcript listener: $e');
       }
     }
   }
@@ -505,7 +506,7 @@ class VoiceService {
       try {
         listener(event);
       } catch (e) {
-        print('❌ Error in interruption listener: $e');
+        debugPrint('❌ Error in interruption listener: $e');
       }
     }
   }
@@ -515,18 +516,18 @@ class VoiceService {
       try {
         listener(audioData);
       } catch (e) {
-        print('❌ Error in audio listener: $e');
+        debugPrint('❌ Error in audio listener: $e');
       }
     }
   }
 
   void _notifyError(String error) {
-    print('❌ Voice service error: $error');
+    debugPrint('❌ Voice service error: $error');
     for (final listener in _errorListeners) {
       try {
         listener(error);
       } catch (e) {
-        print('❌ Error in error listener: $e');
+        debugPrint('❌ Error in error listener: $e');
       }
     }
   }

@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-<<<<<<< HEAD
-import '../models/user_model.dart';
-import '../providers/auth_provider.dart';
-=======
 import '../providers/auth_provider.dart';
 import '../models/user_model.dart';
 import '../services/api_service.dart';
->>>>>>> feat/voice
 import 'main_navigation_screen.dart';
+import 'package:flutter/foundation.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -17,20 +13,6 @@ class OnboardingScreen extends ConsumerStatefulWidget {
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-<<<<<<< HEAD
-class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
-  bool _isCompleting = false;
-
-  // Form data
-  AgeGroup? _selectedAgeGroup;
-  String _mitraName = 'Mitra';
-  Gender? _selectedGender;
-  VoiceType? _selectedVoice;
-
-  final TextEditingController _nameController = TextEditingController();
-=======
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
@@ -58,14 +40,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
 
   // Options data
   OnboardingOptions? _options;
->>>>>>> feat/voice
 
   @override
   void initState() {
     super.initState();
-<<<<<<< HEAD
-    _nameController.text = _mitraName;
-=======
     _initializeAnimations();
     _loadOnboardingOptions();
   }
@@ -104,31 +82,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
       });
     } catch (e) {
       // Handle error - show default options
-      print('Error loading onboarding options: $e');
+      debugPrint('Error loading onboarding options: $e');
     }
->>>>>>> feat/voice
   }
 
   @override
   void dispose() {
-<<<<<<< HEAD
-    _pageController.dispose();
-    _nameController.dispose();
-=======
     _animationController.dispose();
     _pageController.dispose();
     _mitraNameController.dispose();
     _birthYearController.dispose();
->>>>>>> feat/voice
     super.dispose();
   }
 
   void _nextPage() {
-<<<<<<< HEAD
-    if (_currentPage < 3) {
-=======
     if (_currentPage < 4) {
->>>>>>> feat/voice
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -147,42 +115,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     }
   }
 
-<<<<<<< HEAD
-  Future<void> _completeOnboarding() async {
-    if (_selectedAgeGroup == null || 
-        _selectedGender == null || 
-        _selectedVoice == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please complete all steps'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
-    setState(() {
-      _isCompleting = true;
-    });
-
-    try {
-      final onboardingRequest = OnboardingRequest(
-        name: 'User', // Default name since we don't collect it in this flow
-        age: _getAgeFromGroup(_selectedAgeGroup!),
-        gender: _selectedGender!.name,
-        interests: [], // Empty for now, can be added later
-        mitraName: _nameController.text.trim().isEmpty ? 'Mitra' : _nameController.text.trim(),
-        preferredVoice: _selectedVoice!,
-      );
-
-      await ref.read(authControllerProvider.notifier).completeOnboarding(onboardingRequest);
-      
-      if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const MainNavigationScreen(),
-          ),
-=======
   bool _canProceed() {
     switch (_currentPage) {
       case 0:
@@ -223,18 +155,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
->>>>>>> feat/voice
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-<<<<<<< HEAD
-            content: Text('Error completing onboarding: $e'),
-=======
             content: Text('Failed to complete onboarding: $e'),
->>>>>>> feat/voice
             backgroundColor: Colors.red,
           ),
         );
@@ -242,39 +169,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     } finally {
       if (mounted) {
         setState(() {
-<<<<<<< HEAD
-          _isCompleting = false;
-=======
           _isLoading = false;
->>>>>>> feat/voice
         });
       }
     }
   }
 
-<<<<<<< HEAD
-  bool _canProceed() {
-    switch (_currentPage) {
-      case 0:
-        return _selectedAgeGroup != null;
-      case 1:
-        return _nameController.text.trim().isNotEmpty;
-      case 2:
-        return _selectedGender != null;
-      case 3:
-        return _selectedVoice != null;
-      default:
-        return false;
-    }
-  }
-
-=======
->>>>>>> feat/voice
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-<<<<<<< HEAD
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -370,7 +274,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF3498DB),
                       padding: const EdgeInsets.symmetric(vertical: 16),
-=======
       body: SafeArea(
         child: Column(
           children: [
@@ -454,31 +357,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF3498DB),
                       foregroundColor: Colors.white,
->>>>>>> feat/voice
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       elevation: 2,
                     ),
-<<<<<<< HEAD
-                    child: _isCompleting
-=======
                     child: _isLoading
->>>>>>> feat/voice
                         ? const SizedBox(
                             height: 20,
                             width: 20,
                             child: CircularProgressIndicator(
-<<<<<<< HEAD
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : Text(
-                            _currentPage == 3 ? 'Complete Setup' : 'Continue',
-                            style: const TextStyle(
-                              color: Colors.white,
-=======
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
@@ -487,119 +375,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
                             _currentPage == 4 ? 'Complete Setup' : 'Continue',
                             style: const TextStyle(
                               fontSize: 16,
->>>>>>> feat/voice
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                   ),
                 ),
-<<<<<<< HEAD
-              ],
-            ),
-          ),
-        ],
-=======
               ),
             ),
           ],
         ),
->>>>>>> feat/voice
       ),
     );
   }
 
   Widget _buildAgeGroupPage() {
-<<<<<<< HEAD
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          Icon(
-            Icons.cake_outlined,
-            size: 64,
-            color: const Color(0xFF3498DB).withValues(alpha: 0.8),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'What\'s your age group?',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF2C3E50),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'This helps Mitra provide age-appropriate responses and guidance',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: const Color(0xFF7F8C8D),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-          Expanded(
-            child: ListView(
-              children: AgeGroup.values.map((ageGroup) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        _selectedAgeGroup = ageGroup;
-                      });
-                    },
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: _selectedAgeGroup == ageGroup
-                            ? const Color(0xFF3498DB).withValues(alpha: 0.1)
-                            : Colors.white,
-                        border: Border.all(
-                          color: _selectedAgeGroup == ageGroup
-                              ? const Color(0xFF3498DB)
-                              : const Color(0xFFE0E0E0),
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              ageGroup.displayName,
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: _selectedAgeGroup == ageGroup
-                                    ? const Color(0xFF3498DB)
-                                    : const Color(0xFF2C3E50),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          if (_selectedAgeGroup == ageGroup)
-                            const Icon(
-                              Icons.check_circle,
-                              color: Color(0xFF3498DB),
-                              size: 24,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-=======
     return SlideTransition(
       position: _slideAnimation,
       child: FadeTransition(
@@ -653,122 +442,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
             ],
           ),
         ),
->>>>>>> feat/voice
       ),
     );
   }
 
-<<<<<<< HEAD
-  Widget _buildNamePage() {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          Icon(
-            Icons.psychology_outlined,
-            size: 64,
-            color: const Color(0xFF3498DB).withOpacity(0.8),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Customize your AI companion',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF2C3E50),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Give your AI companion a personal name. This creates a more intimate and comfortable conversation experience.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: const Color(0xFF7F8C8D),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'AI Companion Name',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF2C3E50),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter a name (e.g., Mitra, Alex, Sam)',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFF3498DB), width: 2),
-                    ),
-                    contentPadding: const EdgeInsets.all(16),
-                  ),
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  onChanged: (value) {
-                    setState(() {
-                      _mitraName = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF3498DB).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.lightbulb_outline,
-                        color: Color(0xFF3498DB),
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Choose a name that feels comfortable and personal to you',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: const Color(0xFF3498DB),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Spacer(),
-        ],
-=======
   Widget _buildAgeGroupOption(AgeGroup ageGroup, String subtitle, String title) {
     final isSelected = _selectedAgeGroup == ageGroup;
     return Container(
@@ -937,124 +614,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
             ],
           ),
         ),
->>>>>>> feat/voice
       ),
     );
   }
 
   Widget _buildGenderPage() {
-<<<<<<< HEAD
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          Icon(
-            Icons.person_outline,
-            size: 64,
-            color: const Color(0xFF3498DB).withOpacity(0.8),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Choose your companion\'s persona',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF2C3E50),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'This affects how ${_nameController.text.isNotEmpty ? _nameController.text : 'Mitra'} communicates and responds to you',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: const Color(0xFF7F8C8D),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-          Expanded(
-            child: ListView(
-              children: Gender.values.map((gender) {
-                IconData icon;
-                switch (gender) {
-                  case Gender.male:
-                    icon = Icons.man;
-                    break;
-                  case Gender.female:
-                    icon = Icons.woman;
-                    break;
-                  case Gender.nonBinary:
-                    icon = Icons.person;
-                    break;
-                }
-                
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        _selectedGender = gender;
-                      });
-                    },
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: _selectedGender == gender
-                            ? const Color(0xFF3498DB).withOpacity(0.1)
-                            : Colors.white,
-                        border: Border.all(
-                          color: _selectedGender == gender
-                              ? const Color(0xFF3498DB)
-                              : const Color(0xFFE0E0E0),
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            icon,
-                            color: _selectedGender == gender
-                                ? const Color(0xFF3498DB)
-                                : const Color(0xFF7F8C8D),
-                            size: 28,
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Text(
-                              gender.displayName,
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: _selectedGender == gender
-                                    ? const Color(0xFF3498DB)
-                                    : const Color(0xFF2C3E50),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          if (_selectedGender == gender)
-                            const Icon(
-                              Icons.check_circle,
-                              color: Color(0xFF3498DB),
-                              size: 24,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-=======
     return SlideTransition(
       position: _slideAnimation,
       child: FadeTransition(
@@ -1170,148 +734,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
             ],
           ),
         ),
->>>>>>> feat/voice
       ),
     );
   }
 
   Widget _buildVoicePage() {
-<<<<<<< HEAD
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          Icon(
-            Icons.record_voice_over,
-            size: 64,
-            color: const Color(0xFF3498DB).withOpacity(0.8),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Select ${_nameController.text.isNotEmpty ? _nameController.text : 'Mitra'}\'s voice',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF2C3E50),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Choose a voice that feels comfortable for your conversations',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: const Color(0xFF7F8C8D),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-          Expanded(
-            child: ListView(
-              children: VoiceType.values.map((voice) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        _selectedVoice = voice;
-                      });
-                    },
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: _selectedVoice == voice
-                            ? const Color(0xFF3498DB).withOpacity(0.1)
-                            : Colors.white,
-                        border: Border.all(
-                          color: _selectedVoice == voice
-                              ? const Color(0xFF3498DB)
-                              : const Color(0xFFE0E0E0),
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: (_selectedVoice == voice
-                                  ? const Color(0xFF3498DB)
-                                  : const Color(0xFF7F8C8D)
-                              ).withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(
-                              Icons.volume_up,
-                              color: _selectedVoice == voice
-                                  ? const Color(0xFF3498DB)
-                                  : const Color(0xFF7F8C8D),
-                              size: 24,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  voice.displayName,
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: _selectedVoice == voice
-                                        ? const Color(0xFF3498DB)
-                                        : const Color(0xFF2C3E50),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  _getVoiceDescription(voice),
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: const Color(0xFF7F8C8D),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              // TODO: Play voice sample
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Playing ${voice.displayName} sample...'),
-                                  duration: const Duration(seconds: 1),
-                                ),
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.play_circle_outline,
-                              color: Color(0xFF3498DB),
-                            ),
-                          ),
-                          if (_selectedVoice == voice)
-                            const Icon(
-                              Icons.check_circle,
-                              color: Color(0xFF3498DB),
-                              size: 24,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-=======
     return SlideTransition(
       position: _slideAnimation,
       child: FadeTransition(
@@ -1347,37 +774,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
             ],
           ),
         ),
->>>>>>> feat/voice
       ),
     );
   }
 
-<<<<<<< HEAD
-  int _getAgeFromGroup(AgeGroup ageGroup) {
-    switch (ageGroup) {
-      case AgeGroup.young:
-        return 16; // Representative age for teens
-      case AgeGroup.adult:
-        return 30; // Representative age for adults
-      case AgeGroup.senior:
-        return 70; // Representative age for seniors
-    }
-  }
-
-  String _getVoiceDescription(VoiceType voice) {
-    switch (voice) {
-      case VoiceType.femaleYoung:
-        return 'Warm and empathetic voice';
-      case VoiceType.femaleMature:
-        return 'Gentle and soothing voice';
-      case VoiceType.maleYoung:
-        return 'Strong and supportive voice';
-      case VoiceType.maleMature:
-        return 'Deep and reassuring voice';
-    }
-  }
-}
-=======
   Widget _buildVoiceOption(VoiceOption voice) {
     final isSelected = _selectedVoice == voice;
     final voiceName = voice.name.substring(0, 1).toUpperCase() + voice.name.substring(1);
@@ -1605,4 +1005,3 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     );
   }
 }
->>>>>>> feat/voice

@@ -53,46 +53,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     }
   }
 
-<<<<<<< HEAD
-  void _checkAuthState() async {
-    final authState = ref.read(authStateProvider);
-    
-    authState.when(
-      data: (user) async {
-        if (user != null) {
-          // User is authenticated, check onboarding status
-          try {
-            final userDoc = await ref.read(userDocumentProvider.future);
-            
-            if (mounted) {
-              if (userDoc?.isOnboardingCompleted == true) {
-                // User has completed onboarding, go to main app
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
-                );
-              } else {
-                // User needs to complete onboarding
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-                );
-              }
-            }
-          } catch (e) {
-            // Error getting user document, assume onboarding needed
-            if (mounted) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-              );
-            }
-          }
-        } else {
-          // User not authenticated, go to login
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-            );
-          }
-=======
   void _checkAuthState() {
     final authState = ref.read(authControllerProvider);
     authState.when(
@@ -114,7 +74,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const LoginScreen()),
           );
->>>>>>> feat/voice
         }
       },
       loading: () {
