@@ -4,6 +4,7 @@ import '../providers/auth_provider.dart';
 import '../screens/login_screen.dart';
 import '../screens/onboarding_screen.dart';
 import '../screens/main_navigation_screen.dart';
+import 'package:flutter/foundation.dart';
 
 class AppRouter extends ConsumerWidget {
   const AppRouter({super.key});
@@ -14,17 +15,17 @@ class AppRouter extends ConsumerWidget {
 
     return authState.when(
       data: (state) {
-        print('📱 AppRouter - Auth state: isAuthenticated=${state.isAuthenticated}, hasBackendUser=${state.hasBackendUser}, needsOnboarding=${state.needsOnboarding}, isLoading=${state.isLoading}, error=${state.error}');
+        debugPrint('📱 AppRouter - Auth state: isAuthenticated=${state.isAuthenticated}, hasBackendUser=${state.hasBackendUser}, needsOnboarding=${state.needsOnboarding}, isLoading=${state.isLoading}, error=${state.error}');
         
         // Not authenticated - show login screen
         if (!state.isAuthenticated) {
-          print('📱 Showing LoginScreen - not authenticated');
+          debugPrint('📱 Showing LoginScreen - not authenticated');
           return const LoginScreen();
         }
 
         // Authenticated but still loading backend user - show loading
         if (state.isAuthenticated && !state.hasBackendUser && state.isLoading) {
-          print('📱 Showing loading - authenticated but loading backend user');
+          debugPrint('📱 Showing loading - authenticated but loading backend user');
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -34,22 +35,22 @@ class AppRouter extends ConsumerWidget {
 
         // Authenticated but backend user doesn't exist - show login (error state)
         if (state.isAuthenticated && !state.hasBackendUser && !state.isLoading) {
-          print('📱 Showing LoginScreen - authenticated but no backend user');
+          debugPrint('📱 Showing LoginScreen - authenticated but no backend user');
           return const LoginScreen();
         }
 
         // Authenticated but needs onboarding
         if (state.needsOnboarding) {
-          print('📱 Showing OnboardingScreen - needs onboarding');
+          debugPrint('📱 Showing OnboardingScreen - needs onboarding');
           return const OnboardingScreen();
         }
 
         // Authenticated and onboarded - show main app
-        print('📱 Showing MainNavigationScreen - fully authenticated');
+        debugPrint('📱 Showing MainNavigationScreen - fully authenticated');
         return const MainNavigationScreen();
       },
       loading: () {
-        print('📱 AppRouter - Loading state');
+        debugPrint('📱 AppRouter - Loading state');
         return const Scaffold(
           body: Center(
             child: CircularProgressIndicator(),
@@ -57,7 +58,7 @@ class AppRouter extends ConsumerWidget {
         );
       },
       error: (error, stack) {
-        print('📱 AppRouter - Error state: $error');
+        debugPrint('📱 AppRouter - Error state: $error');
         return Scaffold(
           body: Center(
             child: Column(

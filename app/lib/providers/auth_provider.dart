@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../services/firebase_service.dart';
 import '../services/api_service.dart';
 import '../models/user_model.dart';
+import 'package:flutter/foundation.dart';
 
 // API service provider
 final apiServiceProvider = Provider<ApiService>((ref) {
@@ -26,11 +27,7 @@ final currentFirebaseUserProvider = Provider<User?>((ref) {
   return authState.whenData((user) => user).value;
 });
 
-<<<<<<< HEAD
-// User document provider with API integration
-=======
 // User document provider (from backend API)
->>>>>>> feat/voice
 final userDocumentProvider = FutureProvider<UserModel?>((ref) async {
   final firebaseUser = ref.watch(currentFirebaseUserProvider);
   final apiService = ref.watch(apiServiceProvider);
@@ -38,21 +35,6 @@ final userDocumentProvider = FutureProvider<UserModel?>((ref) async {
   if (firebaseUser == null) return null;
 
   try {
-<<<<<<< HEAD
-    // Get auth token
-    final token = await user.getIdToken();
-    if (token == null) return null;
-
-    // Try to get user from API first
-    try {
-      return await ApiService.getCurrentUser(token);
-    } catch (e) {
-      // Fallback to Firebase if API is not available
-      final firebaseService = ref.watch(firebaseServiceProvider);
-      return await firebaseService.getUserDocument(user.uid);
-    }
-  } catch (e) {
-=======
     // Set the Firebase token for API authentication
     final token = await firebaseUser.getIdToken();
     if (token != null) {
@@ -64,7 +46,6 @@ final userDocumentProvider = FutureProvider<UserModel?>((ref) async {
     return null;
   } catch (e) {
     // If user doesn't exist in backend, return null
->>>>>>> feat/voice
     return null;
   }
 });
@@ -121,43 +102,43 @@ class AuthController extends StateNotifier<AsyncValue<AuthState>> {
   void _init() {
     _firebaseService.authStateChanges.listen((firebaseUser) async {
       try {
-        print('Auth state changed: ${firebaseUser?.uid ?? 'null'}');
+        debugPrint('Auth state changed: ${firebaseUser?.uid ?? 'null'}');
         state = AsyncValue.data(state.value?.copyWith(
           firebaseUser: firebaseUser,
           isLoading: true,
         ) ?? AuthState(firebaseUser: firebaseUser, isLoading: true));
 
         if (firebaseUser != null) {
-          print('Getting ID token...');
+          debugPrint('Getting ID token...');
           // Set auth token and try to get backend user
           final token = await firebaseUser.getIdToken();
           if (token != null) {
-            print('ID token obtained');
+            debugPrint('ID token obtained');
             _apiService.setAuthToken(token);
 
             try {
-              print('Attempting to get user profile from backend...');
+              debugPrint('Attempting to get user profile from backend...');
               final backendUser = await _apiService.getUserProfile();
-              print('Backend user profile retrieved successfully');
+              debugPrint('Backend user profile retrieved successfully');
               state = AsyncValue.data(AuthState(
                 firebaseUser: firebaseUser,
                 backendUser: backendUser,
                 isLoading: false,
               ));
             } catch (e) {
-              print(' Failed to get user profile: $e');
+              debugPrint(' Failed to get user profile: $e');
               // User doesn't exist in backend yet, create anonymous user
               try {
-                print(' Attempting to create anonymous user in backend...');
+                debugPrint(' Attempting to create anonymous user in backend...');
                 final backendUser = await _apiService.createAnonymousUser();
-                print(' Anonymous user created successfully');
+                debugPrint(' Anonymous user created successfully');
                 state = AsyncValue.data(AuthState(
                   firebaseUser: firebaseUser,
                   backendUser: backendUser,
                   isLoading: false,
                 ));
               } catch (createError) {
-                print('❌ Failed to create backend user: $createError');
+                debugPrint('❌ Failed to create backend user: $createError');
                 
                 // Check if it's a network/connection error
                 if (createError.toString().contains('Connection') || 
@@ -165,7 +146,7 @@ class AuthController extends StateNotifier<AsyncValue<AuthState>> {
                     createError.toString().contains('SocketException') ||
                     createError.toString().contains('XMLHttpRequest')) {
                   
-                  print('🔧 Network error detected - creating temporary offline user');
+                  debugPrint('🔧 Network error detected - creating temporary offline user');
                   // Create a temporary offline user for development
                   final offlineUser = UserModel(
                     uid: firebaseUser.uid,
@@ -195,7 +176,7 @@ class AuthController extends StateNotifier<AsyncValue<AuthState>> {
               }
             }
           } else {
-            print(' Failed to get ID token');
+            debugPrint(' Failed to get ID token');
             state = AsyncValue.data(AuthState(
               firebaseUser: firebaseUser,
               backendUser: null,
@@ -204,12 +185,12 @@ class AuthController extends StateNotifier<AsyncValue<AuthState>> {
             ));
           }
         } else {
-          print(' User signed out');
+          debugPrint(' User signed out');
           _apiService.clearAuthToken();
           state = const AsyncValue.data(AuthState());
         }
       } catch (e, stackTrace) {
-        print(' Auth state error: $e');
+        debugPrint(' Auth state error: $e');
         state = AsyncValue.error(e, stackTrace);
       }
     });
@@ -217,33 +198,33 @@ class AuthController extends StateNotifier<AsyncValue<AuthState>> {
 
   Future<void> signInAnonymously() async {
     try {
-      print(' Starting anonymous sign-in process...');
+      debugPrint(' Starting anonymous sign-in process...');
       state = AsyncValue.data(state.value?.copyWith(isLoading: true) ?? 
           const AuthState(isLoading: true));
 
       // Sign in with Firebase Auth
-      print(' Calling Firebase signInAnonymously...');
+      debugPrint(' Calling Firebase signInAnonymously...');
       final result = await _firebaseService.signInAnonymously();
       if (result?.user != null) {
-        print(' Firebase sign-in successful');
+        debugPrint(' Firebase sign-in successful');
         final firebaseUser = result!.user!;
         final token = await firebaseUser.getIdToken();
         if (token != null) {
-          print(' Setting auth token...');
+          debugPrint(' Setting auth token...');
           _apiService.setAuthToken(token);
 
           // Create user in backend
           try {
-            print(' Creating user in backend...');
+            debugPrint(' Creating user in backend...');
             final backendUser = await _apiService.createAnonymousUser();
-            print(' Backend user created successfully');
+            debugPrint(' Backend user created successfully');
             state = AsyncValue.data(AuthState(
               firebaseUser: firebaseUser,
               backendUser: backendUser,
               isLoading: false,
             ));
           } catch (e) {
-            print('❌ Backend user creation failed: $e');
+            debugPrint('❌ Backend user creation failed: $e');
             
             // Check if it's a network/connection error  
             if (e.toString().contains('Connection') || 
@@ -251,7 +232,7 @@ class AuthController extends StateNotifier<AsyncValue<AuthState>> {
                 e.toString().contains('SocketException') ||
                 e.toString().contains('XMLHttpRequest')) {
               
-              print('🔧 Network error detected - creating temporary offline user');
+              debugPrint('🔧 Network error detected - creating temporary offline user');
               // Create a temporary offline user for development
               final offlineUser = UserModel(
                 uid: firebaseUser.uid,
@@ -280,7 +261,7 @@ class AuthController extends StateNotifier<AsyncValue<AuthState>> {
             }
           }
         } else {
-          print(' Failed to get Firebase ID token');
+          debugPrint(' Failed to get Firebase ID token');
           state = AsyncValue.data(AuthState(
             firebaseUser: firebaseUser,
             backendUser: null,
@@ -289,14 +270,14 @@ class AuthController extends StateNotifier<AsyncValue<AuthState>> {
           ));
         }
       } else {
-        print(' Firebase sign-in failed');
+        debugPrint(' Firebase sign-in failed');
         state = AsyncValue.data(const AuthState(
           isLoading: false,
           error: 'Failed to sign in anonymously',
         ));
       }
     } catch (e, stackTrace) {
-      print(' Sign-in error: $e');
+      debugPrint(' Sign-in error: $e');
       state = AsyncValue.error(e, stackTrace);
     }
   }

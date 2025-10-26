@@ -4,6 +4,7 @@ import '../services/voice_service.dart';
 import '../services/audio_recorder_service.dart';
 import '../models/user_model.dart';
 import 'auth_provider.dart';
+import 'package:flutter/foundation.dart';
 
 // Voice service provider
 final voiceServiceProvider = Provider<VoiceService>((ref) {
@@ -117,7 +118,7 @@ class VoiceConversationController extends StateNotifier<VoiceConversationState> 
       _audioService.addAudioDataListener(_onAudioDataCaptured);
       _audioService.addErrorListener(_onAudioError);
 
-      print('✅ Live API voice conversation services initialized');
+      debugPrint('✅ Live API voice conversation services initialized');
 
     } catch (e) {
       state = state.copyWith(error: 'Failed to initialize services: $e');
@@ -255,7 +256,7 @@ class VoiceConversationController extends StateNotifier<VoiceConversationState> 
 
   void _onInterruption(VoiceInterruptionEvent interruption) {
     // Handle voice interruption - AI was interrupted by user speech
-    print('🛑 Voice interrupted: ${interruption.reason}');
+    debugPrint('🛑 Voice interrupted: ${interruption.reason}');
 
     // Stop current audio playback
     _audioService.stopPlayback();

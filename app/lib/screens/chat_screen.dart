@@ -115,41 +115,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             ),
             const SizedBox(width: 12),
-<<<<<<< HEAD
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                userAsync.when(
-                  data: (user) => Text(
-                    'Chat with ${user?.preferences.mitraName ?? 'Mitra'}',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF2C3E50),
-                        ),
-                  ),
-                  loading: () => Text(
-                    'Chat with Mitra',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF2C3E50),
-                        ),
-                  ),
-                  error: (_, __) => Text(
-                    'Chat with Mitra',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF2C3E50),
-                        ),
-                  ),
-                ),
-                Text(
-                  'Text Conversation',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: const Color(0xFF7F8C8D),
-                      ),
-                ),
-              ],
-=======
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +137,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     ),
                 ],
               ),
->>>>>>> feat/voice
             ),
           ],
         ),
@@ -450,43 +414,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               fontSize: 16,
                               height: 1.3,
                             ),
-<<<<<<< HEAD
-                            const SizedBox(height: 16),
-                            Text(
-                              userAsync.when(
-                                data: (user) => 'Start a conversation with ${user?.preferences.mitraName ?? 'Mitra'}',
-                                loading: () => 'Start a conversation with Mitra',
-                                error: (_, __) => 'Start a conversation with Mitra',
-                              ),
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    color: const Color(0xFF2C3E50),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              userAsync.when(
-                                data: (user) => 'Share your thoughts, feelings, or anything on your mind with ${user?.preferences.mitraName ?? 'Mitra'}',
-                                loading: () => 'Share your thoughts, feelings, or anything on your mind',
-                                error: (_, __) => 'Share your thoughts, feelings, or anything on your mind',
-                              ),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: const Color(0xFF7F8C8D),
-                                  ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-=======
                           )
                         : MarkdownMessage(
                             markdown: message.content.text!,
                             isUser: isUser,
                           ),
->>>>>>> feat/voice
 
                   // Show thinking text for debugging (only in development)
                   if (!isUser && message.metadata?['thinking'] != null) ...[
